@@ -1,10 +1,39 @@
 import { User } from '../models';
+import { parseQueryParams } from '../utils';
 
 class UserController {
   async getUsers(req, res) {
+    const {
+      sort: querySort,
+      range: queryRange,
+      filter: queryFilter,
+    } = req.query;
     try {
-      const users = await User.findAll();
-      res.json({ users });
+      const { range, sort, filter, limit } = parseQueryParams({
+        queryRange,
+        querySort,
+        queryFilter,
+      });
+      const { count, rows: users } = await User.findAndCountAll({
+        where: filter,
+        order: [sort],
+        limit,
+        offset: range[0],
+      });
+      res.set({
+        'Content-Range': `users: ${range[0]}-${range[1]}/${count}`,
+      });
+      res.json(users);
+    } catch (err) {
+      res.status(404).json({ error: err.message });
+    }
+  }
+
+  async getUser(req, res) {
+    const { id } = req.params;
+    try {
+      const user = await User.findByPk(id);
+      res.json(user);
     } catch (err) {
       res.status(404).json({ error: err.message });
     }
@@ -14,7 +43,7 @@ class UserController {
     const { firstName, lastName, email, password } = req.body;
     try {
       const user = await User.create({ firstName, lastName, email, password });
-      res.status(201).json({ user });
+      res.status(201).json(user);
     } catch (err) {
       res.status(404).json({ error: err.message });
     }
@@ -24,11 +53,11 @@ class UserController {
     const { id } = req.params;
     const { firstName, lastName, email, password } = req.body;
     try {
-      const user = await User.update(
+      const userId = await User.update(
         { firstName, lastName, email, password },
         { where: { id } }
       );
-      res.json({ user });
+      res.json({ id: userId });
     } catch (err) {
       res.status(404).json({ error: err.message });
     }
@@ -37,8 +66,8 @@ class UserController {
   async deleteUser(req, res) {
     const { id } = req.params;
     try {
-      const user = await User.destroy({ where: { id } });
-      res.json({ user });
+      const userId = await User.destroy({ where: { id } });
+      res.json({ id: userId });
     } catch (err) {
       res.status(404).json({ error: err.message });
     }
