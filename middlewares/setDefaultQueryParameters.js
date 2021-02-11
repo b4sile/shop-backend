@@ -6,7 +6,7 @@ export const setDefaultQueryParameters = (req, res, next) => {
     req.query.sort = '["id", "ASC"]';
   }
   if (!req.query.range) {
-    req.query.range = '[0, 20]';
+    req.query.range = '[0, 50]';
   }
   next();
 };

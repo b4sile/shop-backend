@@ -8,7 +8,6 @@ class CategoryController {
       range: queryRange,
       filter: queryFilter,
     } = req.query;
-    console.log(req.query);
     try {
       const { range, sort, filter, limit } = parseQueryParams({
         queryRange,
@@ -34,6 +33,9 @@ class CategoryController {
     const { id } = req.params;
     try {
       const category = await Category.findByPk(id);
+      if (!category) {
+        throw Error('Category not found');
+      }
       res.json(category);
     } catch (err) {
       res.status(404).json({ error: err.message });
@@ -54,8 +56,14 @@ class CategoryController {
     const { id } = req.params;
     const { name } = req.body;
     try {
-      const categoryId = await Category.update({ name }, { where: { id } });
-      res.json({ id: categoryId });
+      const category = await Category.update(
+        { name },
+        { where: { id }, returning: true }
+      );
+      if (category[0] === 0) {
+        throw Error('Category not found');
+      }
+      res.json(...category[1]);
     } catch (err) {
       res.status(404).json({ error: err.message });
     }
@@ -64,8 +72,11 @@ class CategoryController {
   async deleteCategory(req, res) {
     const { id } = req.params;
     try {
-      const categoryId = await Category.destroy({ where: { id } });
-      res.json({ id: categoryId });
+      const category = await Category.destroy({ where: { id } });
+      if (!category) {
+        throw Error('Category not found');
+      }
+      res.json({ status: 'ok' });
     } catch (err) {
       res.status(404).json({ error: err.message });
     }

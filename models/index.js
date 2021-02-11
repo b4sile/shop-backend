@@ -7,19 +7,49 @@ import { CartItem } from './cartItem';
 import { Order } from './order';
 import { OrderItem } from './orderItem';
 
-Category.hasMany(Product, { onDelete: 'CASCADE' });
+Category.hasMany(Product, {
+  onDelete: 'CASCADE',
+  foreignKey: {
+    allowNull: false,
+  },
+});
 
-Product.hasMany(ProductMeta, { onDelete: 'CASCADE' });
+Product.hasMany(ProductMeta, {
+  onDelete: 'CASCADE',
+  foreignKey: {
+    allowNull: false,
+  },
+});
 
-User.hasOne(Cart, { onDelete: 'CASCADE' });
+User.hasOne(Cart, {
+  onDelete: 'CASCADE',
+  foreignKey: {
+    allowNull: false,
+  },
+});
 
-Cart.hasMany(CartItem, { onDelete: 'CASCADE' });
+Cart.hasMany(CartItem, {
+  onDelete: 'CASCADE',
+  foreignKey: {
+    allowNull: false,
+  },
+});
 
 User.hasMany(Order);
 
-Order.hasMany(OrderItem, { onDelete: 'CASCADE' });
+Order.hasMany(OrderItem, {
+  onDelete: 'CASCADE',
+  foreignKey: {
+    allowNull: false,
+  },
+});
 
-ProductMeta.hasMany(CartItem, { onDelete: 'CASCADE' });
+ProductMeta.hasMany(CartItem, {
+  onDelete: 'CASCADE',
+  foreignKey: {
+    allowNull: false,
+  },
+});
 
 ProductMeta.hasMany(OrderItem);
 

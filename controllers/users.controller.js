@@ -33,6 +33,9 @@ class UserController {
     const { id } = req.params;
     try {
       const user = await User.findByPk(id);
+      if (!user) {
+        throw Error('User not found');
+      }
       res.json(user);
     } catch (err) {
       res.status(404).json({ error: err.message });
@@ -53,11 +56,14 @@ class UserController {
     const { id } = req.params;
     const { firstName, lastName, email, password } = req.body;
     try {
-      const userId = await User.update(
+      const user = await User.update(
         { firstName, lastName, email, password },
-        { where: { id } }
+        { where: { id }, returning: true }
       );
-      res.json({ id: userId });
+      if (user[0] === 0) {
+        throw Error('User not found');
+      }
+      res.json(...user[1]);
     } catch (err) {
       res.status(404).json({ error: err.message });
     }
@@ -66,8 +72,11 @@ class UserController {
   async deleteUser(req, res) {
     const { id } = req.params;
     try {
-      const userId = await User.destroy({ where: { id } });
-      res.json({ id: userId });
+      const user = await User.destroy({ where: { id } });
+      if (!user) {
+        throw Error('User not found');
+      }
+      res.json({ status: 'ok' });
     } catch (err) {
       res.status(404).json({ error: err.message });
     }
