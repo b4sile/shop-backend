@@ -6,4 +6,12 @@ export const CartItem = sequelize.define('cart_item', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  cartId: {
+    type: DataTypes.INTEGER,
+    unique: 'cartIdAndProductMetumIdIndex',
+  },
+  productMetumId: {
+    type: DataTypes.INTEGER,
+    unique: 'cartIdAndProductMetumIdIndex',
+  },
 });

@@ -1,4 +1,4 @@
-import { Cart, User } from '../models';
+import { Cart } from '../models';
 import { parseQueryParams } from '../utils';
 
 class CartController {
@@ -32,13 +32,7 @@ class CartController {
   async createCart(req, res) {
     const { userId } = req.body;
     try {
-      const user = await User.findByPk(userId);
-      if (!user) {
-        throw Error('User not found');
-      }
-      const cart = await Cart.build();
-      await user.setCart(cart);
-      await cart.save();
+      const cart = await Cart.create({ userId });
       res.status(201).json(cart);
     } catch (err) {
       res.status(404).json({ error: err.message });

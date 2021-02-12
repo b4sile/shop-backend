@@ -32,7 +32,6 @@ class CartItemController {
   async createCartItem(req, res) {
     const { cartId, quantity, product_metaId: productMetumId } = req.body;
     try {
-      //TODO Написать уникальный индекс в базе по cartId и productMetumId
       const cartItem = await CartItem.create({
         cartId,
         quantity,
