@@ -56,14 +56,12 @@ class UserController {
     const { id } = req.params;
     const { firstName, lastName, email, password } = req.body;
     try {
-      const user = await User.update(
-        { firstName, lastName, email, password },
-        { where: { id }, returning: true }
-      );
-      if (user[0] === 0) {
+      const user = await User.findByPk(id);
+      if (!user) {
         throw Error('User not found');
       }
-      res.json(...user[1]);
+      await user.update({ firstName, lastName, email, password });
+      res.json(user);
     } catch (err) {
       res.status(404).json({ error: err.message });
     }

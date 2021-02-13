@@ -6,3 +6,4 @@ export { default as CartItemController } from './cartItems.controller';
 export { default as ProductMetaController } from './productsMeta.controller';
 export { default as OrderController } from './orders.controller';
 export { default as OrderItemController } from './orderItems.controller';
+export { default as ImageController } from './images.controller';

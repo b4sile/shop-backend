@@ -7,6 +7,7 @@ import { cartItemsRoutes } from './cartItems.routes';
 import { productsMetaRoutes } from './productMeta.routes';
 import { ordersRoutes } from './orders.routes';
 import { orderItemsRoutes } from './orderItems.routes';
+import { imagesRoutes } from './images.routes';
 
 export const router = Router();
 
@@ -18,3 +19,4 @@ router.use('/cart-items', cartItemsRoutes);
 router.use('/productsMeta', productsMetaRoutes);
 router.use('/orders', ordersRoutes);
 router.use('/order-items', orderItemsRoutes);
+router.use('/images', imagesRoutes);

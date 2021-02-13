@@ -1,14 +1,20 @@
 import { sequelize } from '../core/db';
 import { DataTypes } from 'sequelize';
-
+import { setHashPassword } from '../utils';
 export const User = sequelize.define('user', {
   firstName: {
     type: DataTypes.STRING,
     allowNull: false,
+    validate: {
+      len: [4, 16],
+    },
   },
   lastName: {
     type: DataTypes.STRING,
     allowNull: false,
+    validate: {
+      len: [4, 16],
+    },
   },
   email: {
     type: DataTypes.STRING,
@@ -21,6 +27,9 @@ export const User = sequelize.define('user', {
   password: {
     type: DataTypes.STRING,
     allowNull: false,
+    validate: {
+      len: [4, 16],
+    },
   },
   role: {
     type: DataTypes.ENUM('User', 'Admin'),
@@ -31,3 +40,16 @@ export const User = sequelize.define('user', {
     defaultValue: false,
   },
 });
+
+// User.prototype.toJSON = function () {
+//   const values = Object.assign({}, this.get());
+//   delete values.password;
+//   return values;
+// };
+
+User.beforeCreate(setHashPassword);
+User.beforeUpdate(setHashPassword);
+
+User.prototype.isValidPassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};

@@ -6,6 +6,7 @@ import { Cart } from './cart';
 import { CartItem } from './cartItem';
 import { Order } from './order';
 import { OrderItem } from './orderItem';
+import { Image } from './image';
 
 Category.hasMany(Product, {
   onDelete: 'CASCADE',
@@ -15,6 +16,13 @@ Category.hasMany(Product, {
 });
 
 Product.hasMany(ProductMeta, {
+  onDelete: 'CASCADE',
+  foreignKey: {
+    allowNull: false,
+  },
+});
+
+Product.hasMany(Image, {
   onDelete: 'CASCADE',
   foreignKey: {
     allowNull: false,
@@ -61,3 +69,4 @@ export { Cart };
 export { CartItem };
 export { Order };
 export { OrderItem };
+export { Image };
