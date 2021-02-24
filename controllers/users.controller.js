@@ -1,5 +1,6 @@
 import { User } from '../models';
 import { parseQueryParams } from '../utils';
+import { UserService } from '../services';
 
 class UserController {
   async getUsers(req, res) {
@@ -29,6 +30,29 @@ class UserController {
     }
   }
 
+  async getMe(req, res) {
+    try {
+      res.json(req.user);
+    } catch (err) {
+      res.status(404).json({ error: err.message });
+    }
+  }
+
+  async login(req, res) {
+    const { isAdminPanelLogin } = req.query;
+    const { email, password } = req.body;
+    try {
+      const { user, token } = await UserService.loginUser(
+        email,
+        password,
+        isAdminPanelLogin
+      );
+      res.json({ user, token });
+    } catch (err) {
+      res.status(403).json({ error: err.message });
+    }
+  }
+
   async getUser(req, res) {
     const { id } = req.params;
     try {
@@ -54,13 +78,13 @@ class UserController {
 
   async updateUser(req, res) {
     const { id } = req.params;
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password, role } = req.body;
     try {
       const user = await User.findByPk(id);
       if (!user) {
         throw Error('User not found');
       }
-      await user.update({ firstName, lastName, email, password });
+      await user.update({ firstName, lastName, email, password, role });
       res.json(user);
     } catch (err) {
       res.status(404).json({ error: err.message });

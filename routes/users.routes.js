@@ -1,8 +1,14 @@
 import { Router } from 'express';
 import { UserController } from '../controllers';
-import { setDefaultQueryParameters } from '../middlewares';
+import { setDefaultQueryParameters, checkAuth, permit } from '../middlewares';
 
 export const usersRoutes = Router();
+
+usersRoutes.route('/signin').post(UserController.login);
+
+usersRoutes.route('/me').get([checkAuth], UserController.getMe);
+
+usersRoutes.use([checkAuth, permit('Admin')]);
 
 usersRoutes
   .route('/')

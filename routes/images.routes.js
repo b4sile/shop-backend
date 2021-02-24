@@ -12,7 +12,6 @@ const upload = multer({
       ext !== '.jpg' &&
       ext !== '.jpeg' &&
       ext !== '.png' &&
-      ext !== '.ogg' &&
       ext !== '.webp'
     ) {
       cb(new Error('File type is not supported'), false);

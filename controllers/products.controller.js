@@ -1,4 +1,4 @@
-import { Product } from '../models';
+import { Product, Image, ProductMeta } from '../models';
 import { parseQueryParams } from '../utils';
 class ProductController {
   async getProducts(req, res) {
@@ -18,6 +18,7 @@ class ProductController {
         order: [sort],
         limit,
         offset: range[0],
+        include: Image,
       });
       res.set({
         'Content-Range': `users: ${range[0]}-${range[1]}/${count}`,
@@ -47,7 +48,9 @@ class ProductController {
   async getProduct(req, res) {
     const { id } = req.params;
     try {
-      const product = await Product.findByPk(id);
+      const product = await Product.findByPk(id, {
+        include: [ProductMeta, Image],
+      });
       if (!product) {
         throw Error('Product not found');
       }
