@@ -1,4 +1,4 @@
-import { User } from '../models';
+import { User, Cart } from '../models';
 import { parseQueryParams } from '../utils';
 import { UserService } from '../services';
 
@@ -40,12 +40,13 @@ class UserController {
 
   async login(req, res) {
     const { isAdminPanelLogin } = req.query;
-    const { email, password } = req.body;
+    const { email, password, cartItems } = req.body;
     try {
       const { user, token } = await UserService.loginUser(
         email,
         password,
-        isAdminPanelLogin
+        isAdminPanelLogin,
+        cartItems
       );
       res.json({ user, token });
     } catch (err) {
@@ -70,6 +71,7 @@ class UserController {
     const { firstName, lastName, email, password } = req.body;
     try {
       const user = await User.create({ firstName, lastName, email, password });
+      Cart.create({ userId: user.id });
       res.status(201).json(user);
     } catch (err) {
       res.status(404).json({ error: err.message });

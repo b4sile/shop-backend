@@ -1,4 +1,4 @@
-import { ProductMeta } from '../models';
+import { ProductMeta, Product, Image } from '../models';
 import { parseQueryParams } from '../utils';
 
 class ProductMetaController {
@@ -19,6 +19,7 @@ class ProductMetaController {
         order: [sort],
         limit,
         offset: range[0],
+        include: { model: Product, include: { model: Image } },
       });
       res.set({
         'Content-Range': `users: ${range[0]}-${range[1]}/${count}`,

@@ -22,6 +22,8 @@ Product.hasMany(ProductMeta, {
   },
 });
 
+ProductMeta.belongsTo(Product);
+
 Product.hasMany(Image, {
   onDelete: 'CASCADE',
   foreignKey: {

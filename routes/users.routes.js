@@ -8,12 +8,15 @@ usersRoutes.route('/signin').post(UserController.login);
 
 usersRoutes.route('/me').get([checkAuth], UserController.getMe);
 
-usersRoutes.use([checkAuth, permit('Admin')]);
-
 usersRoutes
   .route('/')
-  .get([setDefaultQueryParameters], UserController.getUsers)
+  .get(
+    [checkAuth, permit('Admin'), setDefaultQueryParameters],
+    UserController.getUsers
+  )
   .post(UserController.createUser);
+
+usersRoutes.use([checkAuth, permit('Admin')]);
 
 usersRoutes
   .route('/:id')

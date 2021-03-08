@@ -1,11 +1,13 @@
 import { Product, Image, ProductMeta } from '../models';
 import { parseQueryParams } from '../utils';
+import { Op } from 'sequelize';
 class ProductController {
   async getProducts(req, res) {
     const {
       sort: querySort,
       range: queryRange,
       filter: queryFilter,
+      title,
     } = req.query;
     try {
       const { range, sort, filter, limit } = parseQueryParams({
@@ -13,6 +15,9 @@ class ProductController {
         querySort,
         queryFilter,
       });
+      if (title) {
+        filter.title = { [Op.substring]: title };
+      }
       const { count, rows: products } = await Product.findAndCountAll({
         where: filter,
         order: [sort],

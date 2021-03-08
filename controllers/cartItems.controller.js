@@ -1,5 +1,6 @@
 import { CartItem } from '../models';
 import { parseQueryParams } from '../utils';
+import { Op } from 'sequelize';
 
 class CartItemController {
   async getCartItems(req, res) {
@@ -51,6 +52,21 @@ class CartItemController {
         throw Error('CartItem not found');
       }
       res.json(cartItem);
+    } catch (err) {
+      res.status(404).json({ error: err.message });
+    }
+  }
+
+  async deleteAllCartItems(req, res) {
+    try {
+      const ids = JSON.parse(req.query.ids);
+      const cartItem = await CartItem.destroy({
+        where: { id: { [Op.in]: ids } },
+      });
+      if (!cartItem) {
+        throw Error('CartItem not found');
+      }
+      res.json({ status: 'ok' });
     } catch (err) {
       res.status(404).json({ error: err.message });
     }
